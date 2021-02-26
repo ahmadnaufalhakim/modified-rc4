@@ -120,6 +120,25 @@ class ModRC4 :
 
         return ciphertext
 
+    def encrypt_binary(self, plaintext, key_1, key_2) :
+        """
+        Encrypt plaintext by given key 1 and key 2 using RC4 algorithm
+        """
+        if len(plaintext) == 0 :
+            raise Exception("Plaintext cannot be empty")
+        if len(key_1) < 2 or len(key_2) < 2 :
+            raise Exception("Key 1 and key 2 must be at least 2 characters long")
+
+        ciphertext = []
+
+        self.ksa(key_1, key_2)
+        keystream = self.prga(plaintext)
+        for idx in range(len(plaintext)) :
+            c = ord(keystream[idx]) ^ plaintext[idx]
+            ciphertext.append(c)
+
+        return ciphertext
+
     def decrypt(self, ciphertext, key_1, key_2) :
         """
         Decrypt ciphertext by given key 1 and key 2 using RC4 algorithm
@@ -141,10 +160,30 @@ class ModRC4 :
 
         return plaintext
 
+    def decrypt_binary(self, ciphertext, key_1, key_2) :
+        """
+        Decrypt ciphertext by given key 1 and key 2 using RC4 algorithm
+        """
+        if len(ciphertext) == 0 :
+            raise Exception("Ciphertext cannot be empty")
+        if len(key_1) < 2 or len(key_2) < 2 :
+            raise Exception("Key 1 and key 2 must be at least 2 characters long")
+
+        plaintext = []
+
+        self.ksa(key_1, key_2)
+        keystream = self.prga(ciphertext)
+        for idx in range(len(ciphertext)) :
+            p = ord(keystream[idx]) ^ ciphertext[idx]
+            plaintext.append(p)
+
+        return plaintext
+
 # mrc4 = ModRC4()
 # key_1 = "hakim"
 # key_2 = "ipul"
 # cip = mrc4.encrypt("kriptografi sangat menyenangkan", key_1, key_2)
+# # <b\x80_dî\x81,ew\xadPò/+Ù«8ÉZ¼3\x8dÖª~ùUÛö©
 # print(cip)
 # pla = mrc4.decrypt(cip, key_1, key_2)
 # print(pla)
